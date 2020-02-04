@@ -5,44 +5,63 @@ import Calendar from 'react-calendar';
 import './App.css';
 class App extends Component {
   state = {
-    pod :
-      {
-        "apod_site":"https://apod.nasa.gov/apod/ap181027.html",
-        "copyright":"Yuri Beletsky (Carnegie Las Campanas Observatory, TWAN)",
-        "date":"2018-10-27",
-        "description":"The best known asterism in northern skies hangs over the Canadian Rockies in this mountain and night skyscape taken last week from Banff National Park. But most remarkable is the amazing greenish airglow. With airglow visible to the eye, but not in color, the scene was captured in two exposures with a single camera, one exposure made while tracking the stars and one fixed to a tripod. Airglow emission is predominately from atmospheric oxygen atoms at extremely low densities. Commonly recorded in color by sensitive digital cameras the eerie, diffuse light is seen here in waves across the northern night. Originating at an altitude similar to aurorae, the luminous airglow is due to chemiluminescence, the production of light through chemical excitation and radiative decay. Energy for the chemical excitation is provided during daytime by the Sun's extreme ultraviolet radiation. Unlike aurorae which are limited to high latitudes, airglow can be found around the globe.",
-        "hdurl":"https://apod.nasa.gov/apod/image/1810/airglow_banff_beletsky.jpg",
-        "media_type":"image",
-        "title":"Airglow Borealis",
-        "url":"https://apod.nasa.gov/apod/image/1810/airglow_banff_beletsky1082.jpg"
-      }
+    selectedDate : this.date
     
   }
 
   clickDay(value, event) {
+    this.setState({selectedDate : value})
+    //alert('Clicked day: ', event)
+    console.log(value)
+    
+    let d = value,
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
-    alert('Clicked day: ', value)
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    console.log(`http://localhost:5000/${ [year, month, day].join('-')}/`)
+
+
+    fetch(`http://localhost:5000/${ [year, month, day].join('-')}/`)
+    .then((response) => {
+      return response.json();
+    })
+    .then((myJson) => {
+      console.log(myJson);
+    });
+
     //console.log(event)
   }
+
+
   render(){
     //  fetch()
     
     return (
     
     <div className="App">
-      <div className="leftside">
-        
-        <Calendar
-        onChange={this.onChange}
-        onClickDay={this.clickDay()}
-        value={this.state.date}
-        />
-          
-      </div>
-      <div className="main">
-        <div>
+      <div className="bgimg w3--display--container w3--text--white">
+        <div className="w3--display--middle main--container">
+          <h1>Picture of the day</h1>
+          <h2>Selected date: {this.state.selectedDate}</h2>
+          <div>
+            <Calendar
+            onChange={this.onChange}
+            onClickDay={this.clickDay}
+            value={this.state.date}
+            />
+              
 
-        </div>
+          </div>
+
+
+
+        </div>  
       </div>
     </div>
 
