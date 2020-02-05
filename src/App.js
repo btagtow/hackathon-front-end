@@ -5,11 +5,16 @@ import Calendar from 'react-calendar';
 import './App.css';
 class App extends Component {
   state = {
-    selectedDate : this.date
+    selectedDate : this.date,
+    title : "",
+    image_url : "",
+    pod_url : "",
+    description : ""
+
     
   }
 
-  clickDay(value, event) {
+  clickDay = (value, event)  => {
     this.setState({selectedDate : value})
     //alert('Clicked day: ', event)
     console.log(value)
@@ -24,15 +29,19 @@ class App extends Component {
     if (day.length < 2) 
         day = '0' + day;
 
-    console.log(`http://localhost:5000/${ [year, month, day].join('-')}/`)
+    let url = `http://localhost:5000/pods?date=${ [year, month, day].join('-')}`
+    console.log(url)
 
 
-    fetch(`http://localhost:5000/${ [year, month, day].join('-')}/`)
+    fetch(url)
     .then((response) => {
       return response.json();
     })
     .then((myJson) => {
       console.log(myJson);
+      this.setState({image_url : myJson.image_url})
+      this.setState({title : myJson.title})
+      this.setState({description : myJson.description})
     });
 
     //console.log(event)
@@ -45,11 +54,12 @@ class App extends Component {
     return (
     
     <div className="App">
-      <div className="bgimg w3--display--container w3--text--white">
-        <div className="w3--display--middle main--container">
-          <h1>Picture of the day</h1>
-          <h2>Selected date: {this.state.selectedDate}</h2>
-          <div>
+      <div >
+
+
+        <div className="maincontainer">
+          <div className="smallcontainer">
+          <h1>Launch Team X </h1>
             <Calendar
             onChange={this.onChange}
             onClickDay={this.clickDay}
@@ -58,7 +68,11 @@ class App extends Component {
               
 
           </div>
-
+          <div className="smallcontainer">
+            <h1>{this.state.title}  </h1>
+            <img src={this.state.image_url} alt="" />
+            <p className="description">{this.state.description}</p>
+          </div>
 
 
         </div>  
